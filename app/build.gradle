@@ -80,6 +80,8 @@ dependencies {
     // Koin main features for Android (Scope,ViewModel ...)
     implementation "io.insert-koin:koin-android:$koinVersion"
 
+    // Logging
+    implementation "com.jakewharton.timber:timber:$timberVersion"
 
     // Dependencies for local unit tests
     testImplementation "junit:junit:$junitVersion"
