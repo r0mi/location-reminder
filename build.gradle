@@ -46,7 +46,7 @@ ext {
     archLifecycleVersion = '2.3.1'
     cardVersion = '1.0.0'
     materialVersion = '1.3.0'
-    fragmentVersion = '1.3.4'
+    fragmentVersion = '1.3.5'
     recyclerViewVersion = '1.2.1'
     mockitoVersion = '2.28.2'
     constraintVersion = '2.1.0-beta02'
@@ -68,5 +68,7 @@ ext {
     androidXTestRulesVersion = '1.3.0'
     espressoVersion = '3.3.0'
     timberVersion = '4.7.1'
+    firebaseBomVersion = '28.1.0'
+    firebaseUiVersion = '7.2.0'
 
 }

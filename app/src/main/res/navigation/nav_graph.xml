@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/reminderListFragment">
 
     <fragment
         android:id="@+id/reminderListFragment"
         android:name="com.udacity.project4.locationreminders.reminderslist.ReminderListFragment"
-        android:label="ReminderListFragment">
+        android:label="ReminderListFragment"
+        tools:layout="@layout/fragment_reminders">
         <action
             android:id="@+id/to_save_reminder"
             app:destination="@id/saveReminderFragment" />
@@ -31,5 +33,12 @@
         android:id="@+id/selectLocationFragment"
         android:name="com.udacity.project4.locationreminders.savereminder.selectreminderlocation.SelectLocationFragment"
         android:label="Select Location" />
+
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="com.udacity.project4.authentication.AuthenticationFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_authentication">
+    </fragment>
 
 </navigation>

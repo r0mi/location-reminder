@@ -8,4 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AccentButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@color/white</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+    </style>
+
+    <style name="LoginTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:buttonStyle">@style/AccentButtonStyle</item>
+    </style>
+
 </resources>

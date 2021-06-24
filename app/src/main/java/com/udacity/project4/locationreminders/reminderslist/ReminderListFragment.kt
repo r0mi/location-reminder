@@ -1,9 +1,16 @@
 package com.udacity.project4.locationreminders.reminderslist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
+import com.firebase.ui.auth.AuthUI
 import com.udacity.project4.R
+import com.udacity.project4.authentication.AuthenticationFragment
+import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentRemindersBinding
@@ -11,15 +18,33 @@ import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.setTitle
 import com.udacity.project4.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
 class ReminderListFragment : BaseFragment() {
     //use Koin to retrieve the ViewModel instance
     override val _viewModel: RemindersListViewModel by viewModel()
+    private val authenticationViewModel: AuthenticationViewModel by viewModel()
     private lateinit var binding: FragmentRemindersBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val navController = findNavController()
+        val currentBackStackEntry = navController.currentBackStackEntry!!
+        val savedStateHandle = currentBackStackEntry.savedStateHandle
+        savedStateHandle.getLiveData<Boolean>(AuthenticationFragment.LOGIN_SUCCESSFUL)
+            .observe(currentBackStackEntry, { success ->
+                if (!success) {
+                    Timber.w("User chose not to log in, so close app")
+                    ActivityCompat.finishAffinity(requireActivity())
+                }
+            })
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(
                 inflater,
@@ -38,6 +63,18 @@ class ReminderListFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navController = findNavController()
+        authenticationViewModel.authenticationState.observe(viewLifecycleOwner, { authenticationState ->
+            when (authenticationState) {
+                AuthenticationViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                    Timber.d("No user logged in, go to authentication")
+                    navigateToAuthentication()
+                }
+                else -> {
+                    Timber.d("Logged in as user ${authenticationViewModel.user.value?.displayName}")
+                }
+            }
+        })
         binding.lifecycleOwner = this
         setupRecyclerView()
         binding.addReminderFAB.setOnClickListener {
@@ -60,18 +97,26 @@ class ReminderListFragment : BaseFragment() {
         )
     }
 
+    private fun navigateToAuthentication() {
+        _viewModel.navigationCommand.postValue(
+            NavigationCommand.ToId(
+                R.id.authenticationFragment
+            )
+        )
+    }
+
     private fun setupRecyclerView() {
         val adapter = RemindersListAdapter {
         }
 
 //        setup the recycler view using the extension function
-        binding.reminderssRecyclerView.setup(adapter)
+        binding.remindersRecyclerView.setup(adapter)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-//                TODO: add the logout implementation
+                authenticationViewModel.logout()
             }
         }
         return super.onOptionsItemSelected(item)
