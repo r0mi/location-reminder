@@ -33,6 +33,7 @@
     <string name="welcome">Welcome</string>
     <string name="err_enter_title">Please enter title</string>
     <string name="err_select_location">Please select location</string>
+    <string name="add_reminder">Add a reminder</string>
 
     <!-- Authentication -->
     <string name="auth_signed_out">Signed out</string>
