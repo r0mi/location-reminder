@@ -1,6 +1,7 @@
 package com.udacity.project4.authentication
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.transition.Slide
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.udacity.project4.R
@@ -32,6 +34,18 @@ class AuthenticationFragment : BaseFragment() {
         registerForActivityResult(FirebaseAuthUIActivityResultContract()) { res ->
             _viewModel.onSignInResult(res)
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.BOTTOM
+        }
+        enterTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+            slideEdge = Gravity.BOTTOM
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

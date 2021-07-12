@@ -1,10 +1,12 @@
 package com.udacity.project4.locationreminders.savereminder
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.transition.Slide
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -17,10 +19,26 @@ class SaveReminderFragment : BaseFragment() {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.START
+        }
+        enterTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.END
+        }
+        returnTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.END
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_save_reminder, container, false)
 

@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.firebase.ui.auth.AuthUI
+import androidx.transition.Fade
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationFragment
 import com.udacity.project4.authentication.AuthenticationViewModel
@@ -28,6 +29,16 @@ class ReminderListFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        exitTransition = Fade().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        }
+        enterTransition = Fade().apply {
+            duration = resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        }
+        returnTransition = Fade().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        }
 
         val navController = findNavController()
         val currentBackStackEntry = navController.currentBackStackEntry!!

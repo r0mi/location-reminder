@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.transition.Slide
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -35,9 +36,25 @@ class SelectLocationFragment : BaseFragment() {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSelectLocationBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.START
+        }
+        enterTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.END
+        }
+        returnTransition = Slide().apply {
+            duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+            slideEdge = Gravity.END
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_select_location, container, false)
 
