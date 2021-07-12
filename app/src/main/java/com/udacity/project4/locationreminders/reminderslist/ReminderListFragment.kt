@@ -11,6 +11,7 @@ import android.provider.Settings
 import android.view.*
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -53,18 +54,16 @@ class ReminderListFragment : BaseFragment() {
             val permissionsDenied = permissions.entries.any { it.value == false }
 
             if (permissionsDenied) {
-                Snackbar.make(
-                    requireView(),
+                showIndefiniteSnackbarWithAction(
                     R.string.permission_denied_explanation,
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.settings) {
-                        startActivity(Intent().apply {
-                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                            data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        })
-                    }.show()
+                    R.string.settings
+                ) {
+                    startActivity(Intent().apply {
+                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    })
+                }
             } else {
                 checkDeviceLocationSettingsAndStartGeofence()
             }
@@ -223,12 +222,12 @@ class ReminderListFragment : BaseFragment() {
                     Timber.d("Error getting location settings resolution: %s", sendEx.message)
                 }
             } else {
-                Snackbar.make(
-                    requireView(),
-                    R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
-                ).setAction(android.R.string.ok) {
+                showIndefiniteSnackbarWithAction(
+                    R.string.location_required_error,
+                    android.R.string.ok
+                ) {
                     checkDeviceLocationSettingsAndStartGeofence()
-                }.show()
+                }
             }
         }
         locationSettingsResponseTask.addOnCompleteListener {
@@ -268,5 +267,18 @@ class ReminderListFragment : BaseFragment() {
         }
         requestMultiplePermissions.launch(permissionsArray)
     }
+
+    private fun showIndefiniteSnackbarWithAction(
+        @StringRes strResId: Int,
+        @StringRes actionStrResId: Int,
+        listener: View.OnClickListener
+    ) {
+        Snackbar.make(
+            requireView(),
+            strResId,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(actionStrResId, listener).show()
+    }
+
 }
 
