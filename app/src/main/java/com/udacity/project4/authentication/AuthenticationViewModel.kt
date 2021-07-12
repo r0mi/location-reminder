@@ -42,7 +42,6 @@ class AuthenticationViewModel(private val app: Application) : BaseViewModel(app)
     fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         val response = result.idpResponse
         if (result.resultCode == AppCompatActivity.RESULT_OK) {
-            showSnackBarInt.value = R.string.auth_sign_in_successful
             navigationCommand.value = NavigationCommand.Back
             Timber.i("Successfully signed in user ${FirebaseAuth.getInstance().currentUser?.displayName}!")
         } else {

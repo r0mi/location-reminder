@@ -39,6 +39,7 @@ abstract class BaseFragment : Fragment() {
                     command.destinationId,
                     false
                 )
+                else -> {}
             }
         })
     }

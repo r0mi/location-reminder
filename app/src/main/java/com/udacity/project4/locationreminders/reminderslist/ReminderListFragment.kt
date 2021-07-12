@@ -1,13 +1,10 @@
 package com.udacity.project4.locationreminders.reminderslist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.firebase.ui.auth.AuthUI
 import androidx.transition.Fade
 import com.udacity.project4.R
 import com.udacity.project4.authentication.AuthenticationFragment
@@ -48,6 +45,8 @@ class ReminderListFragment : BaseFragment() {
                 if (!success) {
                     Timber.w("User chose not to log in, so close app")
                     ActivityCompat.finishAffinity(requireActivity())
+                } else {
+                    _viewModel.showSnackBarInt.value = R.string.auth_sign_in_successful
                 }
             })
     }
@@ -68,24 +67,24 @@ class ReminderListFragment : BaseFragment() {
         setTitle(getString(R.string.app_name))
 
         binding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val navController = findNavController()
-        authenticationViewModel.authenticationState.observe(viewLifecycleOwner, { authenticationState ->
-            when (authenticationState) {
-                AuthenticationViewModel.AuthenticationState.UNAUTHENTICATED -> {
-                    Timber.d("No user logged in, go to authentication")
-                    navigateToAuthentication()
+        authenticationViewModel.authenticationState.observe(
+            viewLifecycleOwner,
+            { authenticationState ->
+                when (authenticationState) {
+                    AuthenticationViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                        Timber.d("No user logged in, go to authentication")
+                        navigateToAuthentication()
+                    }
+                    else -> {
+                        Timber.d("Logged in as user ${authenticationViewModel.user.value?.displayName}")
+                    }
                 }
-                else -> {
-                    Timber.d("Logged in as user ${authenticationViewModel.user.value?.displayName}")
-                }
-            }
-        })
+            })
         binding.lifecycleOwner = this
         setupRecyclerView()
         binding.addReminderFAB.setOnClickListener {
