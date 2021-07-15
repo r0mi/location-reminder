@@ -12,5 +12,6 @@ data class ReminderDataItem(
     var location: String?,
     var latitude: Double?,
     var longitude: Double?,
+    var radius: Double?,
     val id: String = UUID.randomUUID().toString()
 ) : Serializable
