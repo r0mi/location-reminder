@@ -63,7 +63,7 @@ class SelectLocationFragment : BaseFragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
                 showIndefiniteSnackbarWithAction(
-                    R.string.permission_denied_explanation,
+                    R.string.fine_location_permission_denied_explanation,
                     R.string.settings
                 ) {
                     startActivity(Intent().apply {

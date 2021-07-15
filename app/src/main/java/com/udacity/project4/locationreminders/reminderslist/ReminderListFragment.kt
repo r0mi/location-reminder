@@ -53,7 +53,7 @@ class ReminderListFragment : BaseFragment() {
 
             if (permissionsDenied) {
                 showIndefiniteSnackbarWithAction(
-                    R.string.permission_denied_explanation,
+                    R.string.background_location_permission_denied_explanation,
                     R.string.settings
                 ) {
                     startActivity(Intent().apply {
