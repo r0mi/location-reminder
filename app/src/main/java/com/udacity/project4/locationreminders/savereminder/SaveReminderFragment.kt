@@ -33,6 +33,10 @@ class SaveReminderFragment : BaseFragment() {
             duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
             slideEdge = Gravity.END
         }
+        if (SaveReminderFragmentArgs.fromBundle(requireArguments()).selectedPOI == null) {
+            // The fragment is created with no argument the first time, so start with a fresh view model
+            _viewModel.onClear()
+        }
     }
 
     override fun onCreateView(
@@ -53,9 +57,13 @@ class SaveReminderFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = this
         binding.selectLocation.setOnClickListener {
-            //            Navigate to another fragment to get the user location
+//            Navigate to another fragment to get the user location
             _viewModel.navigationCommand.value =
-                NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
+                NavigationCommand.To(
+                    SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment(
+                        _viewModel.selectedPOI.value
+                    )
+                )
         }
 
         binding.saveReminder.setOnClickListener {
@@ -64,16 +72,25 @@ class SaveReminderFragment : BaseFragment() {
             val location = _viewModel.reminderSelectedLocationStr.value
             val latitude = _viewModel.latitude
             val longitude = _viewModel.longitude.value
+            val radius = _viewModel.radius.value
 
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request
 //             2) save the reminder to the local db
+            // Make sure to clear the view model after saving the reminder and navigating away, as it's a single view model.
+            //_viewModel.onClear()
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        //make sure to clear the view model after destroy, as it's a single view model.
-        _viewModel.onClear()
+        val selectedPOI = SaveReminderFragmentArgs.fromBundle(requireArguments()).selectedPOI
+        if (selectedPOI != null) {
+            _viewModel.showSnackBarInt.value = if (_viewModel.selectedPOI.value == null) {
+                R.string.location_added
+            } else {
+                R.string.location_updated
+            }
+            _viewModel.selectedPOI.value = selectedPOI
+            arguments?.clear()
+        }
+        _viewModel.clearNotPersistedPOIData()
     }
 }
