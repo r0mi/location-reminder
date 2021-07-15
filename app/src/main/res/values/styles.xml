@@ -8,9 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AccentButtonStyle" parent="Widget.AppCompat.Button.Colored">
+    <style name="AccentButtonStyle" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:textColor">@color/white</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
     <style name="LoginTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
