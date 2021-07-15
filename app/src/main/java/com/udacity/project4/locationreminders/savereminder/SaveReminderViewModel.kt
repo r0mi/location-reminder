@@ -21,18 +21,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     val reminderTitle = MutableLiveData<String>()
     val reminderDescription = MutableLiveData<String>()
     val selectedPOI = MutableLiveData<PointOfInterest>()
-    val reminderSelectedLocationStr = Transformations.map(selectedPOI) {
-        it?.name
-    }
-    val latitude = Transformations.map(selectedPOI) {
-        it?.latLng?.latitude
-    }
-    val longitude = Transformations.map(selectedPOI) {
-        it?.latLng?.longitude
-    }
-    val radius = Transformations.map(selectedPOI) {
-        it?.radius
-    }
+    val reminderSelectedLocationStr = Transformations.map(selectedPOI) { it?.name }
 
     private val _listOfLatLngs = MutableLiveData<MutableList<Pair<LatLng, Boolean>>>()
 
@@ -115,6 +104,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
             showLoading.value = false
             showToast.value = app.getString(R.string.reminder_saved)
             navigationCommand.value = NavigationCommand.Back
+            onClear()
         }
     }
 
