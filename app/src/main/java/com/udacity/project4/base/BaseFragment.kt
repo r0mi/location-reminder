@@ -1,6 +1,8 @@
 package com.udacity.project4.base
 
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -43,4 +45,17 @@ abstract class BaseFragment : Fragment() {
             }
         })
     }
+
+    protected fun showIndefiniteSnackbarWithAction(
+        @StringRes strResId: Int,
+        @StringRes actionStrResId: Int,
+        listener: View.OnClickListener
+    ) {
+        Snackbar.make(
+            requireView(),
+            strResId,
+            Snackbar.LENGTH_INDEFINITE
+        ).setAction(actionStrResId, listener).show()
+    }
+
 }
