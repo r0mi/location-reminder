@@ -11,7 +11,6 @@ import android.provider.Settings
 import android.view.*
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
@@ -20,7 +19,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
@@ -45,7 +43,7 @@ class ReminderListFragment : BaseFragment() {
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
 
     private val startIntentSenderForResult =
-        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ ->
             checkDeviceLocationSettingsAndStartGeofence(false)
         }
 
@@ -267,18 +265,5 @@ class ReminderListFragment : BaseFragment() {
         }
         requestMultiplePermissions.launch(permissionsArray)
     }
-
-    private fun showIndefiniteSnackbarWithAction(
-        @StringRes strResId: Int,
-        @StringRes actionStrResId: Int,
-        listener: View.OnClickListener
-    ) {
-        Snackbar.make(
-            requireView(),
-            strResId,
-            Snackbar.LENGTH_INDEFINITE
-        ).setAction(actionStrResId, listener).show()
-    }
-
 }
 
