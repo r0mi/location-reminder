@@ -4,6 +4,7 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.udacity.project4.base.BaseRecyclerViewAdapter
 
 
@@ -42,6 +43,17 @@ object BindingAdapters {
                 if (view.visibility == View.VISIBLE)
                     view.fadeOut()
             }
+        }
+    }
+
+    /**
+     * Use this binding adapter to hide the SwipeRefreshLayout refreshing progress indicator
+     */
+    @BindingAdapter("android:isRefreshing")
+    @JvmStatic
+    fun setIsRefreshing(view: SwipeRefreshLayout, isRefreshing: Boolean? = false) {
+        isRefreshing?.let {
+            view.isRefreshing = it
         }
     }
 }
