@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlinVersion = '1.5.10'
+    ext.kotlinVersion = '1.5.20'
     ext.navigationVersion = "2.3.5"
 
     repositories {
@@ -55,7 +55,7 @@ ext {
     coroutinesVersion = '1.4.3'
     coroutinesTestVersion = '1.4.1'
     roomVersion = '2.3.0'
-    koinVersion = '3.1.0'
+    koinVersion = '3.1.2'
     truthVersion = '0.44'
     junitVersion = '4.13.2'
     androidXTestCoreVersion = '1.4.0'
