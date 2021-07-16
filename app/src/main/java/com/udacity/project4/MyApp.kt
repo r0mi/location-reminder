@@ -12,14 +12,12 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import timber.log.Timber
-
 import timber.log.Timber.DebugTree
-
-
 
 
 class MyApp : Application() {
 
+    @Suppress("USELESS_CAST")
     override fun onCreate() {
         super.onCreate()
 
