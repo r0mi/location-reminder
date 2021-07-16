@@ -126,6 +126,7 @@ dependencies {
     // Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"
     implementation "com.google.android.gms:play-services-maps:$playServicesMapsVersion"
+    implementation "com.google.maps.android:android-maps-utils:$androidMapsUtilsVersion"
 
 
 }

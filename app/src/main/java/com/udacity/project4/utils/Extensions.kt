@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.SphericalUtil
 import com.udacity.project4.base.BaseRecyclerViewAdapter
 import com.udacity.project4.base.SwipeController
+import kotlin.math.sqrt
 
 
 /**
@@ -103,3 +106,8 @@ fun <T> MutableLiveData<MutableList<T>>.addIfNotExists(v: T) {
     }
 }
 
+fun LatLng.toBounds(radius: Double): LatLngBounds {
+    val southwest = SphericalUtil.computeOffset(this, radius * sqrt(2.0), 225.0)
+    val northeast = SphericalUtil.computeOffset(this, radius * sqrt(2.0), 45.0)
+    return LatLngBounds(southwest, northeast)
+}

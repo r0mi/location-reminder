@@ -35,6 +35,7 @@ import com.udacity.project4.locationreminders.savereminder.PointOfInterest
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.distanceTo
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.udacity.project4.utils.toBounds
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -317,16 +318,33 @@ class SelectLocationFragment : BaseFragment() {
         locationSettingsResponseTask.addOnCompleteListener {
             if (it.isSuccessful) {
                 if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
-                    fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                        if (location != null && ::map.isInitialized) {
+                    if (!_viewModel.listOfLatLngs.value.isNullOrEmpty() && ::map.isInitialized) {
+                        _viewModel.listOfLatLngs.value?.let { pois ->
+                            val poi = when (pois.size) {
+                                1 -> Pair(pois[0], currentPOI?.radius ?: POI_RADIUS_IN_METERS)
+                                2 -> Pair(pois[0], pois[0].distanceTo(pois[1]))
+                                else -> getCircularBounds(pois)
+                            }
+
                             map.animateCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    LatLng(
-                                        location.latitude,
-                                        location.longitude
-                                    ), 15f
+                                CameraUpdateFactory.newLatLngBounds(
+                                    poi.first.toBounds(poi.second), 100
                                 )
                             )
+
+                        }
+                    } else {
+                        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                            if (location != null && ::map.isInitialized) {
+                                map.animateCamera(
+                                    CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(
+                                            location.latitude,
+                                            location.longitude
+                                        ), 15f
+                                    )
+                                )
+                            }
                         }
                     }
                 } else {
