@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.transition.Fade
 import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
@@ -39,6 +40,7 @@ class ReminderListFragment : BaseFragment() {
     override val _viewModel: RemindersListViewModel by viewModel()
     private val authenticationViewModel: AuthenticationViewModel by viewModel()
     private lateinit var binding: FragmentRemindersBinding
+    private lateinit var geofencingClient: GeofencingClient
 
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
@@ -93,6 +95,8 @@ class ReminderListFragment : BaseFragment() {
                     _viewModel.showSnackBarInt.value = R.string.auth_sign_in_successful
                 }
             })
+
+        geofencingClient = LocationServices.getGeofencingClient(requireActivity())
     }
 
     override fun onCreateView(
@@ -182,6 +186,7 @@ class ReminderListFragment : BaseFragment() {
         binding.remindersRecyclerView.setup(adapter) { reminder, direction ->
             if (direction == ItemTouchHelper.LEFT) { // delete
                 _viewModel.deleteReminder(reminder)
+                deleteGeofence(reminder)
             } else if (direction == ItemTouchHelper.RIGHT) { // edit
                 navigateToEditReminder(reminder)
             }
@@ -280,5 +285,20 @@ class ReminderListFragment : BaseFragment() {
         }
         requestMultiplePermissions.launch(permissionsArray)
     }
+
+    private fun deleteGeofence(reminder: ReminderDataItem) {
+        geofencingClient.removeGeofences(listOf(reminder.id)).run {
+            addOnSuccessListener {
+                Timber.d("Geofence ${reminder.id} deleted")
+            }
+            addOnFailureListener {
+                _viewModel.showErrorMessage.value = getString(R.string.geofence_not_deleted)
+                if ((it.message != null)) {
+                    Timber.w("Failed to delete Geofence: ${it.message.toString()}")
+                }
+            }
+        }
+    }
+
 }
 

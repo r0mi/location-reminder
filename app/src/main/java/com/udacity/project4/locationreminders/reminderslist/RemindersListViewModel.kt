@@ -65,7 +65,6 @@ class RemindersListViewModel(
             loadReminders()
             showLoading.value = false
             showSnackBarInt.value = R.string.reminder_deleted
-            // TODO: delete geofence as well
         }
     }
 
