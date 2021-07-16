@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.transition.Slide
+import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.base.NavigationCommand
@@ -74,8 +75,9 @@ class SaveReminderFragment : BaseFragment() {
             val latitude = _viewModel.selectedPOI.value?.latLng?.latitude
             val longitude = _viewModel.selectedPOI.value?.latLng?.longitude
             val radius = _viewModel.selectedPOI.value?.radius
-            val reminder =
-                ReminderDataItem(title, description, location, latitude, longitude, radius)
+            val reminder = _viewModel.reminderId.value?.let {
+                ReminderDataItem(title, description, location, latitude, longitude, radius, it)
+            } ?: ReminderDataItem(title, description, location, latitude, longitude, radius)
 //            TODO: use the user entered reminder details to:
 //             1) add a geofencing request
             _viewModel.validateAndSaveReminder(reminder)
@@ -92,5 +94,16 @@ class SaveReminderFragment : BaseFragment() {
             arguments?.clear()
         }
         _viewModel.clearNotPersistedPOIData()
+
+        val reminder = SaveReminderFragmentArgs.fromBundle(requireArguments()).reminder
+        reminder?.let {
+            _viewModel.reminderTitle.value = reminder.title
+            _viewModel.reminderDescription.value = reminder.description
+            _viewModel.selectedPOI.value = PointOfInterest(
+                LatLng(it.latitude!!, it.longitude!!), it.radius!!, it.location!!
+            )
+            _viewModel.reminderId.value = reminder.id
+            arguments?.clear()
+        }
     }
 }

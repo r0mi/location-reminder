@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.transition.Fade
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -157,6 +158,14 @@ class ReminderListFragment : BaseFragment() {
         )
     }
 
+    private fun navigateToEditReminder(reminder: ReminderDataItem) {
+        _viewModel.navigationCommand.postValue(
+            NavigationCommand.To(
+                ReminderListFragmentDirections.toSaveReminder(reminder = reminder)
+            )
+        )
+    }
+
     private fun navigateToAuthentication() {
         _viewModel.navigationCommand.postValue(
             NavigationCommand.ToId(
@@ -170,7 +179,13 @@ class ReminderListFragment : BaseFragment() {
         }
 
 //        setup the recycler view using the extension function
-        binding.remindersRecyclerView.setup(adapter)
+        binding.remindersRecyclerView.setup(adapter) { reminder, direction ->
+            if (direction == ItemTouchHelper.LEFT) { // delete
+                _viewModel.deleteReminder(reminder)
+            } else if (direction == ItemTouchHelper.RIGHT) { // edit
+                navigateToEditReminder(reminder)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

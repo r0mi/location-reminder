@@ -3,12 +3,14 @@ package com.udacity.project4.locationreminders.reminderslist
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.udacity.project4.R
 import com.udacity.project4.base.BaseViewModel
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class RemindersListViewModel(
     app: Application,
@@ -16,12 +18,13 @@ class RemindersListViewModel(
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
-    val isRefreshing = SingleLiveEvent<Boolean>()
+    val isRefreshing = MutableLiveData<Boolean>(false)
 
     /**
      * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,
      * or show error if any
      */
+    @Suppress("UNCHECKED_CAST")
     fun loadReminders() {
         showLoading.value = true
         viewModelScope.launch {
@@ -52,6 +55,17 @@ class RemindersListViewModel(
 
             //check if no data has to be shown
             invalidateShowNoData()
+        }
+    }
+
+    fun deleteReminder(reminder: ReminderDataItem) {
+        showLoading.value = true
+        viewModelScope.launch {
+            dataSource.deleteReminder(reminder.id)
+            loadReminders()
+            showLoading.value = false
+            showSnackBarInt.value = R.string.reminder_deleted
+            // TODO: delete geofence as well
         }
     }
 
