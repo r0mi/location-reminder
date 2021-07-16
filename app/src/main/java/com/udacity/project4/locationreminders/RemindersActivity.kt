@@ -10,6 +10,7 @@ import com.udacity.project4.R
  * The RemindersActivity that holds the reminders fragments
  */
 class RemindersActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reminders)
@@ -23,5 +24,10 @@ class RemindersActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        internal const val ACTION_GEOFENCE_EVENT =
+            "project4.locationreminders.RemindersActivity.action.ACTION_GEOFENCE_EVENT"
     }
 }
