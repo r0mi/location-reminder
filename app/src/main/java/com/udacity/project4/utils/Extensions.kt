@@ -2,36 +2,32 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.content.Context
 import android.location.Location
-import android.net.ConnectivityManager
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.base.BaseRecyclerViewAdapter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
+import com.udacity.project4.base.SwipeController
 
 
 /**
  * Extension function to setup the RecyclerView
  */
 fun <T> RecyclerView.setup(
-    adapter: BaseRecyclerViewAdapter<T>
+    adapter: BaseRecyclerViewAdapter<T>,
+    callBack: ((selectedReminder: T, direction: Int) -> Unit)? = null
 ) {
     this.apply {
         layoutManager = LinearLayoutManager(this.context)
         this.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(SwipeController(callBack))
+        itemTouchHelper.attachToRecyclerView(this)
     }
 }
 
