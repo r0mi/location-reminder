@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.TaskStackBuilder
+import androidx.core.content.ContextCompat
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.ReminderDescriptionActivity
@@ -42,7 +43,8 @@ fun sendNotification(context: Context, reminderDataItem: ReminderDataItem) {
 
 //    build the notification object with the data to be shown
     val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
-        .setSmallIcon(R.mipmap.ic_launcher)
+        .setSmallIcon(R.drawable.ic_notification)
+        .setColor(ContextCompat.getColor(context, R.color.colorAccent))
         .setContentTitle(reminderDataItem.title)
         .setContentText(reminderDataItem.location)
         .setContentIntent(notificationPendingIntent)
