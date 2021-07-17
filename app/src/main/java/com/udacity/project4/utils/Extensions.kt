@@ -2,8 +2,13 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.res.Resources
 import android.location.Location
+import android.os.Build
+import android.text.Html
+import android.text.Spanned
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -110,4 +115,13 @@ fun LatLng.toBounds(radius: Double): LatLngBounds {
     val southwest = SphericalUtil.computeOffset(this, radius * sqrt(2.0), 225.0)
     val northeast = SphericalUtil.computeOffset(this, radius * sqrt(2.0), 45.0)
     return LatLngBounds(southwest, northeast)
+}
+
+fun Resources.getHtmlSpannedString(@StringRes id: Int, vararg formatArgs: Any): Spanned =
+    getString(id, *formatArgs).toHtmlSpan()
+
+fun String.toHtmlSpan(): Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+} else {
+    Html.fromHtml(this)
 }

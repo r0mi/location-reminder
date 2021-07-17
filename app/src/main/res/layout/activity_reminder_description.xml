@@ -13,21 +13,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="top"
         android:orientation="vertical"
+        android:padding="@dimen/padding_normal"
         tools:context=".locationreminders.ReminderDescriptionActivity">
-        <!--TODO: add the design of the reminder details-->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/reminder_description_image_height"
+            android:layout_margin="@dimen/margin_large"
+            android:contentDescription="@string/notification_icon"
+            app:srcCompat="@drawable/ic_notification"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Reminder Details"
+            android:gravity="start"
+            android:paddingBottom="@dimen/padding_large"
+            android:text="@{reminderDataItem.title}"
             android:textSize="@dimen/text_size_large"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textStyle="bold"
+            tools:text="Reminder Title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="fill"
+            android:paddingBottom="@dimen/padding_large"
+            android:text="@{reminderDataItem.description}"
+            android:textSize="@dimen/text_size_medium"
+            tools:text="This is the reminder description" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="start"
+                android:reminderForLocation="@{reminderDataItem}"
+                android:textSize="@dimen/text_size_small"
+                tools:text="Reminder for location Golden Gate Bridge\n(Lat: 37.795490, Long: -122.394276, Radius: 300m)" />
+        </RelativeLayout>
 
     </LinearLayout>
 </layout>

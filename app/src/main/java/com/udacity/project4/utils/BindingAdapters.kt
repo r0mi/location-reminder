@@ -1,11 +1,14 @@
 package com.udacity.project4.utils
 
 import android.view.View
+import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.udacity.project4.R
 import com.udacity.project4.base.BaseRecyclerViewAdapter
+import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 
 
 object BindingAdapters {
@@ -56,4 +59,21 @@ object BindingAdapters {
             view.isRefreshing = it
         }
     }
+
+    /**
+     * Use this binding adapter to properly format the reminder for location string
+     */
+    @BindingAdapter("android:reminderForLocation")
+    @JvmStatic
+    fun setReminderForLocation(view: TextView, reminder: ReminderDataItem) {
+        view.text = view.context.resources.getHtmlSpannedString(
+            R.string.reminder_for_location,
+            reminder.location!!,
+            reminder.latitude!!,
+            reminder.longitude!!,
+            reminder.radius!!
+        )
+    }
+
+
 }
