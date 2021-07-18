@@ -10,3 +10,9 @@ sealed class Result<out T : Any> {
     data class Error(val message: String?, val statusCode: Int? = null) :
         Result<Nothing>()
 }
+
+/**
+ * `true` if [Result] is of type [Success].
+ */
+val Result<*>.succeeded
+    get() = this is Result.Success
