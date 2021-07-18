@@ -97,7 +97,9 @@ class SaveReminderFragment : BaseFragment() {
                 ReminderDataItem(title, description, location, latitude, longitude, radius, it)
             } ?: ReminderDataItem(title, description, location, latitude, longitude, radius)
             _viewModel.validateAndSaveReminder(reminder)
-            addGeofence(reminder)
+            if (_viewModel.validateEnteredData(reminder)) {
+                addGeofence(reminder)
+            }
         }
 
         val selectedPOI = SaveReminderFragmentArgs.fromBundle(requireArguments()).selectedPOI
