@@ -249,7 +249,7 @@ class SelectLocationFragment : BaseFragment() {
 
     private fun setMapLongClick(map: GoogleMap) {
         map.setOnMapLongClickListener { latLng ->
-            _viewModel.addLatLngIfNotClose(latLng)
+            _viewModel.addLatLngIfNotCloseElseDelete(latLng)
         }
     }
 
@@ -399,7 +399,7 @@ class SelectLocationFragment : BaseFragment() {
                         .strokeWidth(2f)
                 )
                 updateMap = false
-                _viewModel.addLatLngIfNotClose(it.latLng)
+                _viewModel.addLatLngIfNotCloseElseDelete(it.latLng)
                 updateMap = true
             }
             return
