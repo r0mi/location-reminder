@@ -248,11 +248,6 @@ class ReminderListFragment : BaseFragment() {
                 }
             }
         }
-        locationSettingsResponseTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                // TODO: implement
-            }
-        }
     }
 
     @TargetApi(29)
