@@ -22,7 +22,7 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
     val reminderDescription = MutableLiveData<String>()
     val selectedPOI = MutableLiveData<PointOfInterest>()
     val reminderId = MutableLiveData<String?>(null)
-    val reminderSelectedLocationStr = Transformations.map(selectedPOI) { it?.name }
+    val reminderLocationStr = Transformations.map(selectedPOI) { it?.name }
 
     private val _listOfLatLngs = MutableLiveData<MutableList<Pair<LatLng, Boolean>>>()
 
@@ -34,10 +34,16 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         } ?: arrayListOf()
     }
 
+    /**
+     * Remove all POI coordinates (persisted or not)
+     */
     fun clearAllPOIData() {
         _listOfLatLngs.clear()
     }
 
+    /**
+     * Mark all POIs currently in list to be persisted
+     */
     fun persistPOIData() {
         _listOfLatLngs.value?.let {
             it.forEachIndexed { index, pair ->
@@ -46,13 +52,20 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
     }
 
+    /**
+     * Remove all POI coordinates which have not been marked to be persisted
+     */
     fun clearNotPersistedPOIData() {
         _listOfLatLngs.value?.filter { it.second }?.let {
             _listOfLatLngs.value = it.toMutableList()
         }
     }
 
-    fun addLatLngIfNotClose(latLng: LatLng) {
+    /**
+     * Add POI coordinates to list only if they are not close to existing coordinates,
+     * else delete the point close to the coordinates
+     */
+    fun addLatLngIfNotCloseElseDelete(latLng: LatLng) {
         val closePoint =
             _listOfLatLngs.value?.firstOrNull { it.first.distanceTo(latLng) <= DELETE_POI_RADIUS_IN_METERS }
         if (closePoint != null) {
@@ -62,6 +75,9 @@ class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSo
         }
     }
 
+    /**
+     * Add POI coordinates to list only if they do not exist
+     */
     fun addLatLngIfNotInList(latLng: LatLng) {
         _listOfLatLngs.addIfNotExists(Pair(latLng, false))
     }
