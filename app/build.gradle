@@ -52,6 +52,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
     //implementation "androidx.legacy:legacy-support-v4:$androidXLegacySupport"
     implementation "androidx.annotation:annotation:$androidXAnnotations"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$androidXSwipeRefreshLayoutVersion"
 
     implementation "androidx.cardview:cardview:$cardVersion"
     implementation "com.google.android.material:material:$materialVersion"
@@ -105,6 +106,7 @@ dependencies {
     testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
     testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
     testImplementation "androidx.test:rules:$androidXTestRulesVersion"
+    testImplementation("io.insert-koin:koin-test-junit4:$koinVersion") { exclude group: 'org.mockito' }
 
     // AndroidX Test - Instrumented testing
     androidTestImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
