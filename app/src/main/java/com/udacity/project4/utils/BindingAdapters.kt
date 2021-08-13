@@ -54,7 +54,7 @@ object BindingAdapters {
      */
     @BindingAdapter("android:isRefreshing")
     @JvmStatic
-    fun setIsRefreshing(view: SwipeRefreshLayout, isRefreshing: Boolean? = false) {
+    fun setIsRefreshing(view: SwipeRefreshLayout, isRefreshing: Boolean? = null) {
         isRefreshing?.let {
             view.isRefreshing = it
         }
