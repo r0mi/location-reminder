@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_normal"
             android:fadeVisible="@{!viewModel.showLoading.booleanValue()}"
-            android:src="@drawable/ic_save"
+            app:srcCompat="@drawable/ic_save"
             app:fabSize="normal"
             app:layout_anchor="@+id/constraintLayout"
             app:layout_anchorGravity="bottom|right|end"
