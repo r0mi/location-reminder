@@ -83,18 +83,24 @@ class ReminderListFragment : BaseFragment() {
             duration = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
         }
 
-        val navController = findNavController()
-        val currentBackStackEntry = navController.currentBackStackEntry!!
-        val savedStateHandle = currentBackStackEntry.savedStateHandle
-        savedStateHandle.getLiveData<Boolean>(AuthenticationFragment.LOGIN_SUCCESSFUL)
-            .observe(currentBackStackEntry, { success ->
-                if (!success) {
-                    Timber.w("User chose not to log in, so close app")
-                    ActivityCompat.finishAffinity(requireActivity())
-                } else {
-                    _viewModel.showSnackBarInt.value = R.string.auth_sign_in_successful
-                }
-            })
+        try {
+            // Wrap in try/catch because instrumented test cannot initialize navigation
+            // controller before onViewCreated call
+            val navController = findNavController()
+            val currentBackStackEntry = navController.currentBackStackEntry!!
+            val savedStateHandle = currentBackStackEntry.savedStateHandle
+            savedStateHandle.getLiveData<Boolean>(AuthenticationFragment.LOGIN_SUCCESSFUL)
+                .observe(currentBackStackEntry, { success ->
+                    if (!success) {
+                        Timber.w("User chose not to log in, so close app")
+                        ActivityCompat.finishAffinity(requireActivity())
+                    } else {
+                        _viewModel.showSnackBarInt.value = R.string.auth_sign_in_successful
+                    }
+                })
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
 
         geofencingClient = LocationServices.getGeofencingClient(requireActivity())
     }
