@@ -9,9 +9,10 @@ import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.data.dto.succeeded
+import com.udacity.project4.util.MainCoroutineRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -30,6 +31,9 @@ class RemindersLocalRepositoryTest {
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var localDataSource: ReminderDataSource
     private lateinit var database: RemindersDatabase
@@ -56,10 +60,8 @@ class RemindersLocalRepositoryTest {
         database.close()
     }
 
-    // runBlocking is used here because of https://github.com/Kotlin/kotlinx.coroutines/issues/1204
-    // Replace with runBlockingTest once issue is resolved
     @Test
-    fun saveReminder_retrievesReminder() = runBlocking {
+    fun saveReminder_retrievesReminder() = mainCoroutineRule.runBlockingTest {
         // GIVEN - A new reminder is saved in the database.
         val newReminder = ReminderDTO(
             "Say hi to old friends",
@@ -86,7 +88,7 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun updateReminder_retrievedReminderIsUpdated() = runBlocking {
+    fun updateReminder_retrievedReminderIsUpdated() = mainCoroutineRule.runBlockingTest {
         // Save a new reminder in the database.
         val newReminder = ReminderDTO("Say hi", null, null, null, null, null)
         localDataSource.saveReminder(newReminder)
@@ -116,7 +118,7 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun deleteReminder_retrievesErrorResult() = runBlocking {
+    fun deleteReminder_retrievesErrorResult() = mainCoroutineRule.runBlockingTest {
         // Save a new reminder in the database.
         val newReminder = ReminderDTO("Say hi", null, null, null, null, null)
         localDataSource.saveReminder(newReminder)
@@ -133,7 +135,7 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun getNonExistentReminder_retrievesErrorResult() = runBlocking {
+    fun getNonExistentReminder_retrievesErrorResult() = mainCoroutineRule.runBlockingTest {
         // Create a new reminder, but do not save it to database
         val newReminder = ReminderDTO(null, null, null, null, null, null)
 
@@ -148,21 +150,22 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun getRemindersFromEmptyDataSource_retrievesEmptyListOfReminders() = runBlocking {
-        // Do not add anything to the data source
+    fun getRemindersFromEmptyDataSource_retrievesEmptyListOfReminders() =
+        mainCoroutineRule.runBlockingTest {
+            // Do not add anything to the data source
 
-        // Try to retrieve all reminders
-        val result = localDataSource.getReminders()
+            // Try to retrieve all reminders
+            val result = localDataSource.getReminders()
 
-        // Result contains no reminders.
-        assertThat(result.succeeded, `is`(true))
-        result as Result.Success
-        assertThat(result.data.size, `is`(0))
-        assertThat(result.data, `is`(listOf()))
-    }
+            // Result contains no reminders.
+            assertThat(result.succeeded, `is`(true))
+            result as Result.Success
+            assertThat(result.data.size, `is`(0))
+            assertThat(result.data, `is`(listOf()))
+        }
 
     @Test
-    fun saveMultipleReminders_retrievesAllSavedReminders() = runBlocking {
+    fun saveMultipleReminders_retrievesAllSavedReminders() = mainCoroutineRule.runBlockingTest {
         // Save multiple reminders.
         val reminder1 = ReminderDTO(
             "Say hi to old friends",
@@ -204,7 +207,7 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun deleteAllReminders_retrievesEmptyListOfReminders() = runBlocking {
+    fun deleteAllReminders_retrievesEmptyListOfReminders() = mainCoroutineRule.runBlockingTest {
         // Save multiple reminders and then delete all reminders
         val reminder1 = ReminderDTO(
             "Say hi to old friends",
@@ -246,46 +249,47 @@ class RemindersLocalRepositoryTest {
     }
 
     @Test
-    fun deleteAReminder_retrievedListOfRemindersDoesNotContainDeletedReminder() = runBlocking {
-        // Save multiple reminders and then delete all reminders
-        val reminder1 = ReminderDTO(
-            "Say hi to old friends",
-            "Don't forget Jane and John",
-            "TalTech",
-            59.39604886086625,
-            24.671091785402538,
-            300.5
-        )
-        val reminder2 = ReminderDTO(
-            "Say hello to new friends",
-            "Including Jenny and Johnny",
-            "TalTech Library",
-            59.39706415258735,
-            24.671131154003252,
-            199.0
-        )
-        val reminder3 = ReminderDTO(
-            "Greet current friends",
-            "But not Jenkins",
-            "TalTech Sports Hall",
-            59.39370506890589,
-            24.677392134314477,
-            101.0
-        )
-        localDataSource.saveReminder(reminder1)
-        localDataSource.saveReminder(reminder2)
-        localDataSource.saveReminder(reminder3)
-        val reminders = listOf(reminder1, reminder3)
+    fun deleteAReminder_retrievedListOfRemindersDoesNotContainDeletedReminder() =
+        mainCoroutineRule.runBlockingTest {
+            // Save multiple reminders and then delete all reminders
+            val reminder1 = ReminderDTO(
+                "Say hi to old friends",
+                "Don't forget Jane and John",
+                "TalTech",
+                59.39604886086625,
+                24.671091785402538,
+                300.5
+            )
+            val reminder2 = ReminderDTO(
+                "Say hello to new friends",
+                "Including Jenny and Johnny",
+                "TalTech Library",
+                59.39706415258735,
+                24.671131154003252,
+                199.0
+            )
+            val reminder3 = ReminderDTO(
+                "Greet current friends",
+                "But not Jenkins",
+                "TalTech Sports Hall",
+                59.39370506890589,
+                24.677392134314477,
+                101.0
+            )
+            localDataSource.saveReminder(reminder1)
+            localDataSource.saveReminder(reminder2)
+            localDataSource.saveReminder(reminder3)
+            val reminders = listOf(reminder1, reminder3)
 
-        // Delete one reminder and retrieve all reminders
-        localDataSource.deleteReminder(reminder2.id)
-        val result = localDataSource.getReminders()
+            // Delete one reminder and retrieve all reminders
+            localDataSource.deleteReminder(reminder2.id)
+            val result = localDataSource.getReminders()
 
-        // Result contains all but the deleted reminder.
-        assertThat(result.succeeded, `is`(true))
-        result as Result.Success
-        assertThat(result.data.size, `is`(reminders.size))
-        assertThat(result.data, `is`(reminders))
-    }
+            // Result contains all but the deleted reminder.
+            assertThat(result.succeeded, `is`(true))
+            result as Result.Success
+            assertThat(result.data.size, `is`(reminders.size))
+            assertThat(result.data, `is`(reminders))
+        }
 
 }
