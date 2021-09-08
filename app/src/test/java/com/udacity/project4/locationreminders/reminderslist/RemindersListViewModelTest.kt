@@ -30,7 +30,6 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     // Set the main coroutines dispatcher for unit testing.
-    @ExperimentalCoroutinesApi
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
@@ -82,7 +81,7 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
 
     @Test
     fun loadReminders_noDataShown() {
-        runBlockingTest {
+        mainCoroutineRule.runBlockingTest {
             reminderDataSource.deleteAllReminders()
         }
 

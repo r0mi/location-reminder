@@ -267,16 +267,14 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfTitleMissing() {
+    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfTitleMissing() = mainCoroutineRule.runBlockingTest {
         lateinit var returnedReminder: Result<ReminderDTO>
         // Create a reminder with null title
         var reminder = ReminderDataItem(null, "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
 
         // Then validate and save the reminder & get it from the data source
         saveReminderViewModel.validateAndSaveReminder(reminder)
-        runBlockingTest {
-            returnedReminder = reminderDataSource.getReminder(reminder.id)
-        }
+        returnedReminder = reminderDataSource.getReminder(reminder.id)
 
         // Assert that snackbar is shown and reminder has not been saved
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
@@ -287,9 +285,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
         // Then validate and save the reminder & get it from the data source
         saveReminderViewModel.validateAndSaveReminder(reminder)
-        runBlockingTest {
-            returnedReminder = reminderDataSource.getReminder(reminder.id)
-        }
+        returnedReminder = reminderDataSource.getReminder(reminder.id)
 
         // Assert that snackbar is shown and reminder has not been saved
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
@@ -297,16 +293,14 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfLocationMissing() {
+    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfLocationMissing() = mainCoroutineRule.runBlockingTest {
         lateinit var returnedReminder: Result<ReminderDTO>
         // Create a reminder with null location
         var reminder = ReminderDataItem("Check the view", "On both sides of the bridge", null, null, null, null)
 
         // Then validate and save the reminder & get it from the data source
         saveReminderViewModel.validateAndSaveReminder(reminder)
-        runBlockingTest {
-            returnedReminder = reminderDataSource.getReminder(reminder.id)
-        }
+        returnedReminder = reminderDataSource.getReminder(reminder.id)
 
         // Assert that snackbar is shown and reminder has not been saved
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
@@ -317,9 +311,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
 
         // Then validate and save the reminder & get it from the data source
         saveReminderViewModel.validateAndSaveReminder(reminder)
-        runBlockingTest {
-            returnedReminder = reminderDataSource.getReminder(reminder.id)
-        }
+        returnedReminder = reminderDataSource.getReminder(reminder.id)
 
         // Assert that snackbar is shown and reminder has not been saved
         assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
@@ -327,7 +319,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun validateAndSaveReminder_reminderIsSaved() {
+    fun validateAndSaveReminder_reminderIsSaved() = mainCoroutineRule.runBlockingTest {
         lateinit var returnedReminder: Result<ReminderDTO>
         // Create a valid reminder
         val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", 37.819927, -122.478256, 300.0)
@@ -344,9 +336,7 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         // Execute pending coroutines actions.
         mainCoroutineRule.resumeDispatcher()
 
-        runBlockingTest {
-            returnedReminder = reminderDataSource.getReminder(reminder.id)
-        }
+        returnedReminder = reminderDataSource.getReminder(reminder.id)
 
         // Then assert that the progress indicator is hidden, toast is shown, back navigation command issued and reminder was saved
         val app: Application = ApplicationProvider.getApplicationContext()
