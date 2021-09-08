@@ -317,7 +317,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun showErrorMessage_snackbarIsShown() = runBlocking<Unit> {
+    fun showErrorMessage_snackbarIsShown() {
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
 
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
@@ -327,6 +327,20 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         }
 
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText("Error message")))
+    }
+
+    @Test
+    fun showErrorMessage_toastIsShown() {
+        val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
+
+        dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
+
+        scenario.onFragment { fragment ->
+            (fragment as ReminderListFragment)._viewModel.showToast.value = "Error message"
+        }
+        
+        onView(withText("Error message")).inRoot(ToastMatcher())
+            .check(matches(isDisplayed()))
     }
 }
 
