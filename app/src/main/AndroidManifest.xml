@@ -36,7 +36,8 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".locationreminders.RemindersActivity"
-            android:configChanges="screenLayout|screenSize|orientation">
+            android:configChanges="screenLayout|screenSize|orientation"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
