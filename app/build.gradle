@@ -136,7 +136,7 @@ dependencies {
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$dexMakerVersion"
     androidTestImplementation("io.insert-koin:koin-test:$koinVersion") { exclude group: 'org.mockito' }
     androidTestImplementation("io.insert-koin:koin-test-junit4:$koinVersion") { exclude group: 'org.mockito' }
-    androidTestImplementation("org.assertj:assertj-core:3.20.2")
+    androidTestImplementation("org.assertj:assertj-core:$assertjVersion")
 
     // Maps & Geofencing
     implementation "com.google.android.gms:play-services-location:$playServicesLocationVersion"
