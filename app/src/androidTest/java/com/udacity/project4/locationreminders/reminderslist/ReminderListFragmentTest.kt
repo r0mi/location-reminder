@@ -1,8 +1,6 @@
 package com.udacity.project4.locationreminders.reminderslist
 
 import android.app.Application
-import android.os.IBinder
-import android.view.WindowManager
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.FragmentScenario
@@ -13,7 +11,6 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.Root
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -29,6 +26,7 @@ import com.udacity.project4.locationreminders.data.local.RemindersDatabase
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.util.DataBindingIdlingResource
+import com.udacity.project4.util.ToastMatcher.Companion.onToast
 import com.udacity.project4.util.asDataItem
 import com.udacity.project4.util.atPosition
 import com.udacity.project4.util.monitorFragment
@@ -38,8 +36,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.Description
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -52,6 +48,7 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 
+// NB! You need to be logged in to the app before executing these tests
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -59,9 +56,6 @@ import org.koin.test.get
 @MediumTest
 class ReminderListFragmentTest : AutoCloseKoinTest() {
 
-//    TODO: test the navigation of the fragments.
-//    TODO: test the displayed data on the UI.
-//    TODO: add testing for the error messages.
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -140,6 +134,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         val navController = TestNavHostController(getApplicationContext())
 
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         scenario.onFragment { fragment ->
@@ -173,7 +168,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         val navController = TestNavHostController(getApplicationContext())
 
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         scenario.onFragment { fragment ->
@@ -210,13 +205,8 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         repository.saveReminder(reminder)
 
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
-
-        /*var viewmodel: RemindersListViewModel? = null
-        scenario.onFragment { fragment ->
-            viewmodel = fragment._viewModel
-        }*/
 
         // WHEN - Swiping left on the first reminder in the list
         onView(withId(R.id.remindersRecyclerView)).perform(
@@ -227,9 +217,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         )
 
         // THEN - The reminder is deleted
-        //onView(withText("Reminder Deleted!")).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
-        //assertThat(viewmodel?.showSnackBarInt?.value).isEqualTo(R.string.reminder_deleted)
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText("Reminder Deleted!")))
     }
 
@@ -237,7 +225,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
     fun emptyReminderList_noDataDisplayedInUI() = runBlocking<Unit> {
         // WHEN - ReminderListFragment is displayed with an empty reminder data source
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         // THEN - "No data" text is shown on the screen
@@ -277,7 +265,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
 
         // WHEN - ReminderListFragment is launched
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         // THEN - The respective reminders are displayed on the screen
@@ -319,7 +307,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
     @Test
     fun showErrorMessage_snackbarIsShown() {
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         scenario.onFragment { fragment ->
@@ -332,33 +320,13 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
     @Test
     fun showErrorMessage_toastIsShown() {
         val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
-
+        @Suppress("UNCHECKED_CAST")
         dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
 
         scenario.onFragment { fragment ->
             (fragment as ReminderListFragment)._viewModel.showToast.value = "Error message"
         }
-        
-        onView(withText("Error message")).inRoot(ToastMatcher())
-            .check(matches(isDisplayed()))
-    }
-}
 
-class ToastMatcher : TypeSafeMatcher<Root>() {
-
-    override fun describeTo(description: Description) {
-        description.appendText("is toast")
-    }
-
-    override fun matchesSafely(item: Root): Boolean {
-        val type: Int? = item.windowLayoutParams?.get()?.type
-        if (type == WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW) {
-            val windowToken: IBinder = item.decorView.windowToken
-            val appToken: IBinder = item.decorView.applicationWindowToken
-            if (windowToken === appToken) { // means this window isn't contained by any other windows.
-                return true
-            }
-        }
-        return false
+        onToast("Error message").check(matches(isDisplayed()))
     }
 }
