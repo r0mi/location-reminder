@@ -7,12 +7,20 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.udacity.project4.R
 import kotlin.math.max
 import kotlin.math.min
 
-class SwipeController<T>(private val callback: ((item: T, direction: Int) -> Unit)? = null) :
+class SwipeController<T>(
+    private val swipeRefreshLayout: SwipeRefreshLayout? = null,
+    private val callback: ((item: T, direction: Int) -> Unit)? = null
+) :
     ItemTouchHelper.Callback() {
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        super.onSelectedChanged(viewHolder, actionState)
+        swipeRefreshLayout?.isEnabled = actionState != ItemTouchHelper.ACTION_STATE_SWIPE
+    }
 
     override fun getMovementFlags(
         recyclerView: RecyclerView,

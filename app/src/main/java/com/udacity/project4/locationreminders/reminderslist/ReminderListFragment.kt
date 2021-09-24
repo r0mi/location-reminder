@@ -189,7 +189,7 @@ class ReminderListFragment : BaseFragment() {
         }
 
 //        setup the recycler view using the extension function
-        binding.remindersRecyclerView.setup(adapter) { reminder, direction ->
+        binding.remindersRecyclerView.setup(adapter, binding.refreshLayout) { reminder, direction ->
             if (direction == ItemTouchHelper.LEFT) { // delete
                 _viewModel.deleteReminder(reminder)
                 deleteGeofence(reminder)

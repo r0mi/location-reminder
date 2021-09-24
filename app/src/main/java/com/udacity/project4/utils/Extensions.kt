@@ -15,6 +15,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.SphericalUtil
@@ -28,13 +29,14 @@ import kotlin.math.sqrt
  */
 fun <T> RecyclerView.setup(
     adapter: BaseRecyclerViewAdapter<T>,
+    swipeRefreshLayout: SwipeRefreshLayout? = null,
     callBack: ((selectedReminder: T, direction: Int) -> Unit)? = null
 ) {
     this.apply {
         layoutManager = LinearLayoutManager(this.context)
         this.adapter = adapter
 
-        val itemTouchHelper = ItemTouchHelper(SwipeController(callBack))
+        val itemTouchHelper = ItemTouchHelper(SwipeController(swipeRefreshLayout, callBack))
         itemTouchHelper.attachToRecyclerView(this)
     }
 }
