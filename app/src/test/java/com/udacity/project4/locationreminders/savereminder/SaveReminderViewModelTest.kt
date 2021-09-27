@@ -58,12 +58,25 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     @Test
     fun setSelectedPOI_selectedLocationStringIsSet() {
         // Set selected POI
-        val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", 37.819927, -122.478256, 300.0)
+        val reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            37.819927,
+            -122.478256,
+            300.0
+        )
         saveReminderViewModel.selectedPOI.value = PointOfInterest(
-            LatLng(reminder.latitude!!, reminder.longitude!!), reminder.radius!!, reminder.location!!)
+            LatLng(reminder.latitude!!, reminder.longitude!!),
+            reminder.radius!!,
+            reminder.location!!
+        )
 
         // Assert that selected location string has been set
-        assertThat(saveReminderViewModel.reminderLocationStr.getOrAwaitValue(), `is`(reminder.location))
+        assertThat(
+            saveReminderViewModel.reminderLocationStr.getOrAwaitValue(),
+            `is`(reminder.location)
+        )
     }
 
     @Test
@@ -85,7 +98,10 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.clearNotPersistedPOIData()
 
         // Assert that all POIs are still in list
-        assertThat(saveReminderViewModel.listOfLatLngs.getOrAwaitValue(), `is`(listOf(poi1, poi2, poi3)))
+        assertThat(
+            saveReminderViewModel.listOfLatLngs.getOrAwaitValue(),
+            `is`(listOf(poi1, poi2, poi3))
+        )
 
         // Delete all POIs
         saveReminderViewModel.clearAllPOIData()
@@ -124,7 +140,10 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.clearNotPersistedPOIData()
 
         // Assert that all POIs have been persisted
-        assertThat(saveReminderViewModel.listOfLatLngs.getOrAwaitValue(), `is`(listOf(poi1, poi2, poi3)))
+        assertThat(
+            saveReminderViewModel.listOfLatLngs.getOrAwaitValue(),
+            `is`(listOf(poi1, poi2, poi3))
+        )
     }
 
     @Test
@@ -205,7 +224,10 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.addLatLngIfNotCloseElseDelete(poi3)
 
         // Assert that all POIs have been added
-        assertThat(saveReminderViewModel.listOfLatLngs.getOrAwaitValue(), `is`(listOf(poi1, poi2, poi3)))
+        assertThat(
+            saveReminderViewModel.listOfLatLngs.getOrAwaitValue(),
+            `is`(listOf(poi1, poi2, poi3))
+        )
     }
 
     @Test
@@ -225,7 +247,10 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.addLatLngIfNotInList(poi1)
 
         // Assert that all POIs but the duplicates have been added
-        assertThat(saveReminderViewModel.listOfLatLngs.getOrAwaitValue(), `is`(listOf(poi3, poi1, poi2)))
+        assertThat(
+            saveReminderViewModel.listOfLatLngs.getOrAwaitValue(),
+            `is`(listOf(poi3, poi1, poi2))
+        )
     }
 
     @Test
@@ -241,19 +266,37 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.addLatLngIfNotInList(poi3)
 
         // Assert that all POIs have been added
-        assertThat(saveReminderViewModel.listOfLatLngs.getOrAwaitValue(), `is`(listOf(poi1, poi2, poi3)))
+        assertThat(
+            saveReminderViewModel.listOfLatLngs.getOrAwaitValue(),
+            `is`(listOf(poi1, poi2, poi3))
+        )
     }
 
     @Test
     fun onClear_valuesCleared() {
         // Create a valid reminder and update viewmodel live data
-        val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", 37.819927, -122.478256, 300.0)
+        val reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            37.819927,
+            -122.478256,
+            300.0
+        )
         saveReminderViewModel.reminderTitle.value = reminder.title
         saveReminderViewModel.reminderDescription.value = reminder.description
         saveReminderViewModel.selectedPOI.value = PointOfInterest(
-            LatLng(reminder.latitude!!, reminder.longitude!!), reminder.radius!!, reminder.location!!)
+            LatLng(reminder.latitude!!, reminder.longitude!!),
+            reminder.radius!!,
+            reminder.location!!
+        )
         saveReminderViewModel.reminderId.value = reminder.id
-        saveReminderViewModel.addLatLngIfNotCloseElseDelete(LatLng(reminder.latitude!!, reminder.longitude!!))
+        saveReminderViewModel.addLatLngIfNotCloseElseDelete(
+            LatLng(
+                reminder.latitude!!,
+                reminder.longitude!!
+            )
+        )
 
         // Clear viewmodel data
         saveReminderViewModel.onClear()
@@ -267,62 +310,111 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     }
 
     @Test
-    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfTitleMissing() = mainCoroutineRule.runBlockingTest {
-        lateinit var returnedReminder: Result<ReminderDTO>
-        // Create a reminder with null title
-        var reminder = ReminderDataItem(null, "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
+    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfTitleMissing() =
+        mainCoroutineRule.runBlockingTest {
+            lateinit var returnedReminder: Result<ReminderDTO>
+            // Create a reminder with null title
+            var reminder = ReminderDataItem(
+                null,
+                "On both sides of the bridge",
+                "Golden Gate Bridge",
+                null,
+                null,
+                null
+            )
 
-        // Then validate and save the reminder & get it from the data source
-        saveReminderViewModel.validateAndSaveReminder(reminder)
-        returnedReminder = reminderDataSource.getReminder(reminder.id)
+            // Then validate and save the reminder & get it from the data source
+            saveReminderViewModel.validateAndSaveReminder(reminder)
+            returnedReminder = reminderDataSource.getReminder(reminder.id)
 
-        // Assert that snackbar is shown and reminder has not been saved
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
-        assertThat(returnedReminder.succeeded, `is`(false))
+            // Assert that snackbar is shown and reminder has not been saved
+            assertThat(
+                saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+                `is`(R.string.err_enter_title)
+            )
+            assertThat(returnedReminder.succeeded, `is`(false))
 
-        // Create a reminder with empty title
-        reminder = ReminderDataItem("", "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
+            // Create a reminder with empty title
+            reminder = ReminderDataItem(
+                "",
+                "On both sides of the bridge",
+                "Golden Gate Bridge",
+                null,
+                null,
+                null
+            )
 
-        // Then validate and save the reminder & get it from the data source
-        saveReminderViewModel.validateAndSaveReminder(reminder)
-        returnedReminder = reminderDataSource.getReminder(reminder.id)
+            // Then validate and save the reminder & get it from the data source
+            saveReminderViewModel.validateAndSaveReminder(reminder)
+            returnedReminder = reminderDataSource.getReminder(reminder.id)
 
-        // Assert that snackbar is shown and reminder has not been saved
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
-        assertThat(returnedReminder.succeeded, `is`(false))
-    }
+            // Assert that snackbar is shown and reminder has not been saved
+            assertThat(
+                saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+                `is`(R.string.err_enter_title)
+            )
+            assertThat(returnedReminder.succeeded, `is`(false))
+        }
 
     @Test
-    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfLocationMissing() = mainCoroutineRule.runBlockingTest {
-        lateinit var returnedReminder: Result<ReminderDTO>
-        // Create a reminder with null location
-        var reminder = ReminderDataItem("Check the view", "On both sides of the bridge", null, null, null, null)
+    fun validateAndSaveReminder_reminderIsNotSavedAndSnackbarIsShownIfLocationMissing() =
+        mainCoroutineRule.runBlockingTest {
+            lateinit var returnedReminder: Result<ReminderDTO>
+            // Create a reminder with null location
+            var reminder = ReminderDataItem(
+                "Check the view",
+                "On both sides of the bridge",
+                null,
+                null,
+                null,
+                null
+            )
 
-        // Then validate and save the reminder & get it from the data source
-        saveReminderViewModel.validateAndSaveReminder(reminder)
-        returnedReminder = reminderDataSource.getReminder(reminder.id)
+            // Then validate and save the reminder & get it from the data source
+            saveReminderViewModel.validateAndSaveReminder(reminder)
+            returnedReminder = reminderDataSource.getReminder(reminder.id)
 
-        // Assert that snackbar is shown and reminder has not been saved
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
-        assertThat(returnedReminder.succeeded, `is`(false))
+            // Assert that snackbar is shown and reminder has not been saved
+            assertThat(
+                saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+                `is`(R.string.err_select_location)
+            )
+            assertThat(returnedReminder.succeeded, `is`(false))
 
-        // Create a reminder with empty location
-        reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "", null, null, null)
+            // Create a reminder with empty location
+            reminder = ReminderDataItem(
+                "Check the view",
+                "On both sides of the bridge",
+                "",
+                null,
+                null,
+                null
+            )
 
-        // Then validate and save the reminder & get it from the data source
-        saveReminderViewModel.validateAndSaveReminder(reminder)
-        returnedReminder = reminderDataSource.getReminder(reminder.id)
+            // Then validate and save the reminder & get it from the data source
+            saveReminderViewModel.validateAndSaveReminder(reminder)
+            returnedReminder = reminderDataSource.getReminder(reminder.id)
 
-        // Assert that snackbar is shown and reminder has not been saved
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
-        assertThat(returnedReminder.succeeded, `is`(false))
-    }
+            // Assert that snackbar is shown and reminder has not been saved
+            assertThat(
+                saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+                `is`(R.string.err_select_location)
+            )
+            assertThat(returnedReminder.succeeded, `is`(false))
+        }
 
     @Test
     fun validateAndSaveReminder_reminderIsSaved() = mainCoroutineRule.runBlockingTest {
         lateinit var returnedReminder: Result<ReminderDTO>
         // Create a valid reminder
-        val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", 37.819927, -122.478256, 300.0)
+        val reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            37.819927,
+            -122.478256,
+            300.0
+        )
 
         // Pause dispatcher so you can verify initial values.
         mainCoroutineRule.pauseDispatcher()
@@ -341,8 +433,14 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         // Then assert that the progress indicator is hidden, toast is shown, back navigation command issued and reminder was saved
         val app: Application = ApplicationProvider.getApplicationContext()
         assertThat(saveReminderViewModel.showLoading.getOrAwaitValue(), `is`(false))
-        assertThat(saveReminderViewModel.showToast.getOrAwaitValue(), `is`(app.getString(R.string.reminder_saved)))
-        assertThat(saveReminderViewModel.navigationCommand.getOrAwaitValue(), `is`(NavigationCommand.Back))
+        assertThat(
+            saveReminderViewModel.showToast.getOrAwaitValue(),
+            `is`(app.getString(R.string.reminder_saved))
+        )
+        assertThat(
+            saveReminderViewModel.navigationCommand.getOrAwaitValue(),
+            `is`(NavigationCommand.Back)
+        )
         assertThat(returnedReminder.succeeded, `is`(true))
         assertThat((returnedReminder as Result.Success<ReminderDTO>).data, `is`(reminder.asDTO()))
     }
@@ -350,7 +448,14 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     @Test
     fun saveReminder_loadingShowedToastShowedAndNavigatedBack() {
         // Create a valid reminder
-        val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", 37.819927, -122.478256, 300.0)
+        val reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            37.819927,
+            -122.478256,
+            300.0
+        )
 
         // Pause dispatcher so you can verify initial values.
         mainCoroutineRule.pauseDispatcher()
@@ -360,9 +465,17 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         saveReminderViewModel.reminderTitle.value = reminder.title
         saveReminderViewModel.reminderDescription.value = reminder.description
         saveReminderViewModel.selectedPOI.value = PointOfInterest(
-            LatLng(reminder.latitude!!, reminder.longitude!!), reminder.radius!!, reminder.location!!)
+            LatLng(reminder.latitude!!, reminder.longitude!!),
+            reminder.radius!!,
+            reminder.location!!
+        )
         saveReminderViewModel.reminderId.value = reminder.id
-        saveReminderViewModel.addLatLngIfNotCloseElseDelete(LatLng(reminder.latitude!!, reminder.longitude!!))
+        saveReminderViewModel.addLatLngIfNotCloseElseDelete(
+            LatLng(
+                reminder.latitude!!,
+                reminder.longitude!!
+            )
+        )
 
         // Then assert that the progress indicator is shown.
         assertThat(saveReminderViewModel.showLoading.getOrAwaitValue(), `is`(true))
@@ -373,8 +486,14 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
         // Then assert that the progress indicator is hidden, toast is shown and back navigation command issued
         val app: Application = ApplicationProvider.getApplicationContext()
         assertThat(saveReminderViewModel.showLoading.getOrAwaitValue(), `is`(false))
-        assertThat(saveReminderViewModel.showToast.getOrAwaitValue(), `is`(app.getString(R.string.reminder_saved)))
-        assertThat(saveReminderViewModel.navigationCommand.getOrAwaitValue(), `is`(NavigationCommand.Back))
+        assertThat(
+            saveReminderViewModel.showToast.getOrAwaitValue(),
+            `is`(app.getString(R.string.reminder_saved))
+        )
+        assertThat(
+            saveReminderViewModel.navigationCommand.getOrAwaitValue(),
+            `is`(NavigationCommand.Back)
+        )
 
         //Assert that onClear was called
         assertThat(saveReminderViewModel.reminderTitle.getOrAwaitValue(), `is`(nullValue()))
@@ -387,53 +506,94 @@ class SaveReminderViewModelTest : AutoCloseKoinTest() {
     @Test
     fun validateEnteredData_returnsFalseAndShowsSnackbarIfTitleMissing() {
         // Create a reminder with null title
-        var reminder = ReminderDataItem(null, "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
+        var reminder = ReminderDataItem(
+            null,
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            null,
+            null,
+            null
+        )
 
         // And validate the reminder
         var isValid = saveReminderViewModel.validateEnteredData(reminder)
 
         // Assert that reminder is invalid and snackbar is shown
         assertThat(isValid, `is`(false))
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
+        assertThat(
+            saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.err_enter_title)
+        )
 
         // Create a reminder with empty title
-        reminder = ReminderDataItem("", "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
+        reminder = ReminderDataItem(
+            "",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            null,
+            null,
+            null
+        )
 
         // And validate the reminder
         isValid = saveReminderViewModel.validateEnteredData(reminder)
 
         // Assert that reminder is invalid and snackbar is shown
         assertThat(isValid, `is`(false))
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_enter_title))
+        assertThat(
+            saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.err_enter_title)
+        )
     }
 
     @Test
     fun validateEnteredData_returnsFalseAndShowsSnackbarIfLocationMissing() {
         // Create a reminder with null location
-        var reminder = ReminderDataItem("Check the view", "On both sides of the bridge", null, null, null, null)
+        var reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            null,
+            null,
+            null,
+            null
+        )
 
         // And validate the reminder
         var isValid = saveReminderViewModel.validateEnteredData(reminder)
 
         // Assert that reminder is invalid and snackbar is shown
         assertThat(isValid, `is`(false))
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
+        assertThat(
+            saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.err_select_location)
+        )
 
         // Create a reminder with empty location
-        reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "", null, null, null)
+        reminder =
+            ReminderDataItem("Check the view", "On both sides of the bridge", "", null, null, null)
 
         // And validate the reminder
         isValid = saveReminderViewModel.validateEnteredData(reminder)
 
         // Assert that reminder is invalid and snackbar is shown
         assertThat(isValid, `is`(false))
-        assertThat(saveReminderViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.err_select_location))
+        assertThat(
+            saveReminderViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.err_select_location)
+        )
     }
 
     @Test
     fun validateEnteredData_returnsTrue() {
         // Create a valid reminder
-        val reminder = ReminderDataItem("Check the view", "On both sides of the bridge", "Golden Gate Bridge", null, null, null)
+        val reminder = ReminderDataItem(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            null,
+            null,
+            null
+        )
 
         // And validate the reminder
         val isValid = saveReminderViewModel.validateEnteredData(reminder)

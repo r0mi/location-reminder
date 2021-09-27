@@ -46,6 +46,9 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 
+// NB! You need to be LOGGED OUT from the app before executing this test suite
+// NB! Manual intervention is needed to cancel the Google Smart Lock screens in first two tests
+
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 //END TO END test to black box test the app

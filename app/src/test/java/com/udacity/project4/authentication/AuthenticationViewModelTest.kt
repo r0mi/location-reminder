@@ -1,38 +1,25 @@
 package com.udacity.project4.authentication
 
-import android.os.Looper.getMainLooper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.locationreminders.MainCoroutineRule
 import com.udacity.project4.locationreminders.getOrAwaitValue
-import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
-import com.udacity.project4.locationreminders.savereminder.PointOfInterest
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.test.AutoCloseKoinTest
-import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.mock
-import org.robolectric.Shadows.shadowOf
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -53,7 +40,8 @@ class AuthenticationViewModelTest : AutoCloseKoinTest() {
     @Before
     fun setUp() {
         FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
-        authenticationViewModel = AuthenticationViewModel(ApplicationProvider.getApplicationContext())
+        authenticationViewModel =
+            AuthenticationViewModel(ApplicationProvider.getApplicationContext())
     }
 
     @Test
@@ -77,7 +65,10 @@ class AuthenticationViewModelTest : AutoCloseKoinTest() {
         authenticationViewModel.onSignInResult(result)
 
         // Assert that back navigation command is issued
-        assertThat(authenticationViewModel.navigationCommand.getOrAwaitValue(), `is`(NavigationCommand.Back))
+        assertThat(
+            authenticationViewModel.navigationCommand.getOrAwaitValue(),
+            `is`(NavigationCommand.Back)
+        )
     }
 
     @Test
@@ -87,18 +78,25 @@ class AuthenticationViewModelTest : AutoCloseKoinTest() {
         authenticationViewModel.onSignInResult(result)
 
         // Assert that sign in cancelled snackbar is shown
-        assertThat(authenticationViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.auth_sign_in_cancelled))
+        assertThat(
+            authenticationViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.auth_sign_in_cancelled)
+        )
     }
 
     @Test
     fun onSignInResult_unsuccessful() {
         val mockedIdpResponse = mock(IdpResponse::class.java)
-        val result = FirebaseAuthUIAuthenticationResult(AppCompatActivity.RESULT_CANCELED, mockedIdpResponse)
+        val result =
+            FirebaseAuthUIAuthenticationResult(AppCompatActivity.RESULT_CANCELED, mockedIdpResponse)
 
         authenticationViewModel.onSignInResult(result)
 
         // Assert that sign in unsuccessful snackbar is shown
-        assertThat(authenticationViewModel.showSnackBarInt.getOrAwaitValue(), `is`(R.string.auth_sign_in_unsuccessful))
+        assertThat(
+            authenticationViewModel.showSnackBarInt.getOrAwaitValue(),
+            `is`(R.string.auth_sign_in_unsuccessful)
+        )
     }
 
 }

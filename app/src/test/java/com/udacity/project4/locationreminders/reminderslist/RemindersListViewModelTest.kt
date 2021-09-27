@@ -34,7 +34,14 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
     var mainCoroutineRule = MainCoroutineRule()
 
     private val fakeReminders = listOf(
-        ReminderDTO("Check the view", "On both sides of the bridge", "Golden Gate Bridge", null, null, null),
+        ReminderDTO(
+            "Check the view",
+            "On both sides of the bridge",
+            "Golden Gate Bridge",
+            null,
+            null,
+            null
+        ),
         ReminderDTO("Check the size", "Measure all sides", "Union Square", null, null, null),
         ReminderDTO("Try some seafood", "Lobster is a must", "Pier 39", null, null, null)
     )

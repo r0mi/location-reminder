@@ -48,7 +48,7 @@ import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 
-// NB! You need to be logged in to the app before executing these tests
+// NB! You need to be LOGGED IN to the app before executing these tests
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
