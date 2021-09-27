@@ -109,6 +109,7 @@ class AuthenticationFragment : BaseFragment() {
             .setAvailableProviders(providers)
             .setLogo(R.drawable.map)
             .setTheme(R.style.LoginTheme)
+            .setIsSmartLockEnabled(false)
             .build()
         signInLauncher.launch(signInIntent)
     }

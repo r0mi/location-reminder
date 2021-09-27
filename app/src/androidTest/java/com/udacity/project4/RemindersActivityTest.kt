@@ -47,7 +47,6 @@ import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
 
 // NB! You need to be LOGGED OUT from the app before executing this test suite
-// NB! Manual intervention is needed to cancel the Google Smart Lock screens in first two tests
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -128,10 +127,6 @@ class RemindersActivityTest :
         // Click on login button
         loginButton.perform(click())
 
-        runBlocking {
-            delay(3000) // Provide time for the user to manually cancel the Google Smart Lock screen
-        }
-
         // Cancel login by navigating back
         pressBack()
 
@@ -154,17 +149,9 @@ class RemindersActivityTest :
         // Click on login button
         loginButton.perform(click())
 
-        runBlocking {
-            delay(3000) // Provide time for the user to manually cancel the Google Smart Lock screen
-        }
-
         // Sign in using e-mail and password
         onView(allOf(withId(R.id.email_button), withText("Sign in with email")))
             .perform(scrollTo(), click())
-
-        runBlocking {
-            delay(3000) // Again provide time for the user to manually cancel the Google Smart Lock screen
-        }
 
         // Input the test account e-mail address
         onView(withId(R.id.email))
