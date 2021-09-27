@@ -5,11 +5,17 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import com.udacity.project4.R
+import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * The RemindersActivity that holds the reminders fragments
  */
 class RemindersActivity : AppCompatActivity() {
+
+    // Lazy inject SaveReminderViewModel that is shared between fragments
+    private val saveReminderViewModel by viewModel<SaveReminderViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
