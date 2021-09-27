@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.udacity.project4.authentication.AuthenticationViewModel" />
@@ -27,12 +28,12 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            style="@style/AccentButtonStyle"
             android:id="@+id/auth_button"
+            style="@style/AccentButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/login"
             android:onClick="@{() -> viewModel.login()}"
+            android:text="@string/login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
