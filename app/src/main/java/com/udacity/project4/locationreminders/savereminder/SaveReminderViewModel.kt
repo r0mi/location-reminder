@@ -18,9 +18,9 @@ import kotlinx.coroutines.launch
 
 class SaveReminderViewModel(val app: Application, val dataSource: ReminderDataSource) :
     BaseViewModel(app) {
-    val reminderTitle = MutableLiveData<String>()
-    val reminderDescription = MutableLiveData<String>()
-    val selectedPOI = MutableLiveData<PointOfInterest>()
+    val reminderTitle = MutableLiveData<String?>()
+    val reminderDescription = MutableLiveData<String?>()
+    val selectedPOI = MutableLiveData<PointOfInterest?>()
     val reminderId = MutableLiveData<String?>(null)
     val reminderLocationStr = Transformations.map(selectedPOI) { it?.name }
 
