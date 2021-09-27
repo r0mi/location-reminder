@@ -127,4 +127,17 @@ class RemindersListViewModelTest : AutoCloseKoinTest() {
             `is`(R.string.reminder_deleted)
         )
     }
+
+    @Test
+    fun loadReminders_errorShown() {
+        // Tell the fake data source to return error
+        reminderDataSource.setReturnError(true)
+
+        // Load the reminders in the view model.
+        remindersListViewModel.loadReminders()
+
+        // Then assert that snackbar shows error message
+        assertThat(remindersListViewModel.showSnackBar.getOrAwaitValue(), `is`(FakeDataSource.ERROR_LOADING_REMINDERS))
+    }
+
 }

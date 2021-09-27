@@ -9,8 +9,17 @@ class FakeDataSource : ReminderDataSource {
 
     var remindersServiceData: LinkedHashMap<String, ReminderDTO> = LinkedHashMap()
 
+    private var shouldReturnError = false
+
+    fun setReturnError(value: Boolean) {
+        shouldReturnError = value
+    }
+
     override suspend fun getReminders(): Result<List<ReminderDTO>> {
-        return Result.Success(remindersServiceData.values.toList())
+        return if (!shouldReturnError)
+            Result.Success(remindersServiceData.values.toList())
+        else
+            Result.Error(ERROR_LOADING_REMINDERS)
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
@@ -22,10 +31,13 @@ class FakeDataSource : ReminderDataSource {
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
+        if (shouldReturnError) {
+            return Result.Error(ERROR_LOADING_REMINDER)
+        }
         remindersServiceData[id]?.let {
             return Result.Success(it)
         }
-        return Result.Error("Reminder not found!")
+        return Result.Error(REMINDER_NOT_FOUND)
     }
 
     override suspend fun deleteAllReminders() {
@@ -36,5 +48,11 @@ class FakeDataSource : ReminderDataSource {
         for (reminder in reminders) {
             remindersServiceData[reminder.id] = reminder
         }
+    }
+
+    companion object {
+        const val REMINDER_NOT_FOUND = "Reminder not found!"
+        const val ERROR_LOADING_REMINDER = "Error loading reminder!"
+        const val ERROR_LOADING_REMINDERS = "Error loading reminders!"
     }
 }
