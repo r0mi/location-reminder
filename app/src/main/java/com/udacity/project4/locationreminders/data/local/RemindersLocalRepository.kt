@@ -48,7 +48,7 @@ class RemindersLocalRepository(
      * Delete a reminder in the db.
      * @param id to be used to delete the reminder
      */
-    override suspend fun deleteReminder(id: String) = withContext(ioDispatcher)  {
+    override suspend fun deleteReminder(id: String) = withContext(ioDispatcher) {
         wrapEspressoIdlingResource {
             remindersDao.deleteReminderById(id)
         }
