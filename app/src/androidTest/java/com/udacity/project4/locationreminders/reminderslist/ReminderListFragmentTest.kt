@@ -36,6 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -219,6 +220,78 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
         // THEN - The reminder is deleted
         onView(withId(R.id.noDataTextView)).check(matches(isDisplayed()))
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText("Reminder Deleted!")))
+    }
+
+    @Test
+    fun swipeDownOnReminder_refreshesList() = runBlocking<Unit> {
+        // GIVEN - ReminderListFragment with one reminder
+        val reminder1 = ReminderDTO(
+            "Say hi to old friends",
+            "Don't forget Jane and John",
+            "TalTech",
+            59.39604886086625,
+            24.671091785402538,
+            300.5
+        )
+        val reminder2 = ReminderDTO(
+            "Say hello to new friends",
+            "Including Jenny and Johnny",
+            "TalTech Library",
+            59.39706415258735,
+            24.671131154003252,
+            199.0
+        )
+        repository.saveReminder(reminder1)
+
+        val scenario = launchFragmentInContainer<ReminderListFragment>(null, R.style.AppTheme)
+        @Suppress("UNCHECKED_CAST")
+        dataBindingIdlingResource.monitorFragment(scenario as FragmentScenario<Fragment>)
+
+        // GIVEN - A second reminder added in the background after the view has loaded
+        repository.saveReminder(reminder2)
+
+        // Check that only the first reminder is displayed
+        onView(withId(R.id.remindersRecyclerView)).check(
+            matches(
+                 allOf(
+                    hasDescendant(withText(reminder1.title)),
+                    hasDescendant(withText(reminder1.description)),
+                    hasDescendant(withText(reminder1.location)),
+                )
+            )
+        )
+        onView(withId(R.id.remindersRecyclerView)).check(
+            matches(not(
+                allOf(
+                    hasDescendant(withText(reminder2.title)),
+                    hasDescendant(withText(reminder2.description)),
+                    hasDescendant(withText(reminder2.location)),
+                )
+            ))
+        )
+
+        // WHEN - Swiping down on the recycle view screen
+        onView(withId(R.id.remindersRecyclerView)).perform(swipeDown())
+
+        // THEN - Verify both reminders are displayed
+        onView(withId(R.id.remindersRecyclerView)).check(
+            matches(
+                allOf(
+                    hasDescendant(withText(reminder1.title)),
+                    hasDescendant(withText(reminder1.description)),
+                    hasDescendant(withText(reminder1.location)),
+                )
+            )
+        )
+        onView(withId(R.id.remindersRecyclerView)).check(
+            matches(
+                allOf(
+                    hasDescendant(withText(reminder2.title)),
+                    hasDescendant(withText(reminder2.description)),
+                    hasDescendant(withText(reminder2.location)),
+                )
+            )
+        )
     }
 
     @Test
