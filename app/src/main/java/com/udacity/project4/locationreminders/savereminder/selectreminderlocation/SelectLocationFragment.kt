@@ -66,7 +66,7 @@ class SelectLocationFragment : BaseFragment() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
                 showSnackbarWithAction(
-                    R.string.fine_location_permission_rationale_for_select_location_fragment,
+                    R.string.fine_location_permission_rationale,
                     R.string.settings
                 ) {
                     startActivity(Intent().apply {
@@ -287,7 +287,7 @@ class SelectLocationFragment : BaseFragment() {
         if (!isAdded) {
             return
         }
-        if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
+        if (checkLocationPermission()) {
             checkDeviceLocationSettings()
         } else {
             requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -297,7 +297,7 @@ class SelectLocationFragment : BaseFragment() {
     private fun checkLocationPermission() = ActivityCompat.checkSelfPermission(
         requireActivity(),
         Manifest.permission.ACCESS_FINE_LOCATION
-    )
+    ) == PackageManager.PERMISSION_GRANTED
 
     private fun checkDeviceLocationSettings(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
@@ -331,7 +331,7 @@ class SelectLocationFragment : BaseFragment() {
                 map.uiSettings.isCompassEnabled = true
                 showEnableMyLocationMenuItem = false
 
-                if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
+                if (checkLocationPermission()) {
                     if (!_viewModel.listOfLatLngs.value.isNullOrEmpty() && ::map.isInitialized) {
                         _viewModel.listOfLatLngs.value?.let { pois ->
                             val poi = when (pois.size) {
@@ -358,7 +358,7 @@ class SelectLocationFragment : BaseFragment() {
     }
 
     private fun getLastLocation() {
-        if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
+        if (checkLocationPermission()) {
             fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null && ::map.isInitialized) {
                     map.animateCamera(
