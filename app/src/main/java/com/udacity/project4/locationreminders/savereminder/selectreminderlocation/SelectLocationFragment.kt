@@ -287,6 +287,8 @@ class SelectLocationFragment : BaseFragment() {
             return
         }
         if (checkLocationPermission()) {
+            map.isMyLocationEnabled = true
+            map.uiSettings.isCompassEnabled = true
             checkDeviceLocationSettings()
         } else {
             requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -326,8 +328,6 @@ class SelectLocationFragment : BaseFragment() {
         }
         locationSettingsResponseTask.addOnCompleteListener {
             if (it.isSuccessful) {
-                map.isMyLocationEnabled = true
-                map.uiSettings.isCompassEnabled = true
                 showEnableMyLocationMenuItem = false
 
                 if (checkLocationPermission()) {
