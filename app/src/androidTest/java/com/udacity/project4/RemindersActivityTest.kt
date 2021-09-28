@@ -366,6 +366,10 @@ class RemindersActivityTest :
         // Verify reminder saved toast is displayed
         onToast(R.string.reminder_saved).check(matches(isDisplayed()))
 
+        // Verify snackbar message is shown about added geofence
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText(R.string.geofence_added)))
+
         // Verify added reminder is displayed
         onView(withText(reminderTitle)).check(matches(isDisplayed()))
         onView(withText(reminderDescription)).check(matches(isDisplayed()))
@@ -408,6 +412,10 @@ class RemindersActivityTest :
 
         // Verify reminder saved toast is displayed
         onToast(R.string.reminder_saved).check(matches(isDisplayed()))
+
+        // Verify snackbar message is shown about added geofence
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText(R.string.geofence_added)))
 
         // Verify added reminder is displayed
         onView(withText(reminderTitle)).check(matches(isDisplayed()))
@@ -490,6 +498,10 @@ class RemindersActivityTest :
 
         // Reminder saved toast
         onToast(R.string.reminder_saved).check(matches(isDisplayed()))
+
+        // Verify snackbar message is shown about added geofence
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText(R.string.geofence_added)))
 
         // Verify updated reminder is displayed
         onView(withText(reminderNewTitle)).check(matches(isDisplayed()))
