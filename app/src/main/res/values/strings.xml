@@ -24,11 +24,10 @@
     <string name="dropped_pin">Dropped Pin</string>
     <string name="point_of_interest">Point of interest</string>
     <string name="poi">poi</string>
-    <string name="location_required_error">Location services must be enabled to use the app</string>
+    <string name="location_service_rationale_for_save_reminder_fragment">Location reminders do not work with location services disabled</string>
     <string name="location_service_rationale_for_select_location_fragment">Your location cannot be shown on the map with location services disabled</string>
-    <string name="fine_location_permission_denied_explanation">You need to grant location permission in order to select the location.</string>
-    <string name="fine_location_permission_rationale_for_select_location_fragment">Location permission is required to display your current location.</string>
-    <string name="background_location_permission_denied_explanation">You need to grant full location permission in order for location reminders to work.</string>
+    <string name="fine_location_permission_rationale">Location permission is required to display your current location.</string>
+    <string name="background_location_permission_rationale">You need to grant full location permission in order for location reminders to work.</string>
     <string name="settings">Settings</string>
     <string name="select_poi">Please select a point of interest</string>
     <string name="location_added">Location added</string>
@@ -48,6 +47,7 @@
     <string name="save_reminder">Save reminder</string>
     <string name="notification_icon">Notification icon</string>
     <string name="reminder_for_location"><![CDATA[Reminder for location <b>%1$s</b><br/>(Lat: %2$.5f, Long: %3$.5f, Radius: %4$fm)]]></string>
+    <string name="geofence_added">Geofence has been added</string>
 
     <!-- Authentication -->
     <string name="auth_signed_out">Signed out</string>
