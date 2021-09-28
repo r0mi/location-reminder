@@ -265,6 +265,9 @@ class SaveReminderFragment : BaseFragment() {
             .addGeofence(geofence)
             .build()
 
+        // Remove the existing geofence associated with the current reminder
+        // If such a geofence exists (should exist only when editing an existing reminder),
+        // we will remove it and replace it with an updated version
         geofencingClient.removeGeofences(listOf(reminder.id)).run {
             addOnCompleteListener {
                 // I use explicitly RemindersListViewModel to show geofence added/not added snackbar
