@@ -21,4 +21,9 @@
         android:id="@+id/clear_map"
         android:title="@string/clear_map"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/enable_my_location"
+        android:title="@string/enable_my_location"
+        android:visible="false"
+        app:showAsAction="never" />
 </menu>

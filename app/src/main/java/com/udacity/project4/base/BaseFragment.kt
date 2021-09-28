@@ -58,4 +58,16 @@ abstract class BaseFragment : Fragment() {
         ).setAction(actionStrResId, listener).show()
     }
 
+    protected fun showSnackbarWithAction(
+        @StringRes strResId: Int,
+        @StringRes actionStrResId: Int,
+        listener: View.OnClickListener
+    ) {
+        Snackbar.make(
+            requireView(),
+            strResId,
+            Snackbar.LENGTH_LONG
+        ).setAction(actionStrResId, listener).show()
+    }
+
 }

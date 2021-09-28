@@ -36,7 +36,6 @@ import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.distanceTo
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import com.udacity.project4.utils.toBounds
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
 
@@ -52,6 +51,8 @@ class SelectLocationFragment : BaseFragment() {
     private val args: SelectLocationFragmentArgs by navArgs()
     private var currentPOI: PointOfInterest? = null
     private var updateMap = true
+    private var showEnableMyLocationMenuItem = true
+    private var lastLocationRetries = 0
     private val fusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(requireContext())
     }
@@ -64,8 +65,8 @@ class SelectLocationFragment : BaseFragment() {
     private val requestLocationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (!isGranted) {
-                showIndefiniteSnackbarWithAction(
-                    R.string.fine_location_permission_denied_explanation,
+                showSnackbarWithAction(
+                    R.string.fine_location_permission_rationale_for_select_location_fragment,
                     R.string.settings
                 ) {
                     startActivity(Intent().apply {
@@ -155,6 +156,12 @@ class SelectLocationFragment : BaseFragment() {
         inflater.inflate(R.menu.map_options, menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+
+        menu.findItem(R.id.enable_my_location)?.isVisible = showEnableMyLocationMenuItem
+    }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.normal_map -> {
             map.mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -174,6 +181,10 @@ class SelectLocationFragment : BaseFragment() {
         }
         R.id.clear_map -> {
             clearMap()
+            true
+        }
+        R.id.enable_my_location -> {
+            enableMyLocation()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -272,23 +283,21 @@ class SelectLocationFragment : BaseFragment() {
         }
     }
 
-    private fun checkLocationPermission() = ActivityCompat.checkSelfPermission(
-        requireActivity(),
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
-
     private fun enableMyLocation() {
         if (!isAdded) {
             return
         }
         if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
-            map.isMyLocationEnabled = true
-            map.uiSettings.isCompassEnabled = true
             checkDeviceLocationSettings()
         } else {
             requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
+
+    private fun checkLocationPermission() = ActivityCompat.checkSelfPermission(
+        requireActivity(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
     private fun checkDeviceLocationSettings(resolve: Boolean = true) {
         val locationRequest = LocationRequest.create().apply {
@@ -308,9 +317,9 @@ class SelectLocationFragment : BaseFragment() {
                     Timber.d("Error getting location settings resolution: %s", sendEx.message)
                 }
             } else {
-                showIndefiniteSnackbarWithAction(
-                    R.string.location_required_error,
-                    android.R.string.ok
+                showSnackbarWithAction(
+                    R.string.location_service_rationale_for_select_location_fragment,
+                    R.string.enable
                 ) {
                     checkDeviceLocationSettings()
                 }
@@ -318,6 +327,10 @@ class SelectLocationFragment : BaseFragment() {
         }
         locationSettingsResponseTask.addOnCompleteListener {
             if (it.isSuccessful) {
+                map.isMyLocationEnabled = true
+                map.uiSettings.isCompassEnabled = true
+                showEnableMyLocationMenuItem = false
+
                 if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
                     if (!_viewModel.listOfLatLngs.value.isNullOrEmpty() && ::map.isInitialized) {
                         _viewModel.listOfLatLngs.value?.let { pois ->
@@ -335,21 +348,30 @@ class SelectLocationFragment : BaseFragment() {
 
                         }
                     } else {
-                        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                            if (location != null && ::map.isInitialized) {
-                                map.animateCamera(
-                                    CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(
-                                            location.latitude,
-                                            location.longitude
-                                        ), 15f
-                                    )
-                                )
-                            }
-                        }
+                        getLastLocation()
                     }
                 } else {
                     requestLocationPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            }
+        }
+    }
+
+    private fun getLastLocation() {
+        if (checkLocationPermission() == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null && ::map.isInitialized) {
+                    map.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                location.latitude,
+                                location.longitude
+                            ), 15f
+                        )
+                    )
+                    lastLocationRetries = 0
+                } else if (location == null && lastLocationRetries++ < MAXIMUM_LOCATION_RETRIES) {
+                    view?.postDelayed({ getLastLocation() }, LOCATION_RETRY_DELAY_MS)
                 }
             }
         }
@@ -463,6 +485,8 @@ class SelectLocationFragment : BaseFragment() {
     }
 
     companion object {
+        private const val MAXIMUM_LOCATION_RETRIES = 10
+        private const val LOCATION_RETRY_DELAY_MS = 500L
         private const val POI_RADIUS_IN_METERS = 100.0
         internal const val DELETE_POI_RADIUS_IN_METERS = 30.0
     }
