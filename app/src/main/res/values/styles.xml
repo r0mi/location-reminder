@@ -8,6 +8,7 @@
         <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorOnSecondary">@color/white</item>
         <item name="android:statusBarColor" tools:ignore="NewApi">@color/colorPrimaryDark</item>
+        <item name="snackbarTextViewStyle">@style/SnackbarStyle</item>
     </style>
 
     <style name="AccentButtonStyle" parent="Widget.MaterialComponents.Button">
@@ -16,6 +17,10 @@
         <item name="android:backgroundTint" tools:ignore="NewApi">@color/colorAccent</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="SnackbarStyle" parent="@style/Widget.MaterialComponents.Snackbar.TextView">
+        <item name="android:maxLines">5</item>
     </style>
 
     <style name="LoginTheme" parent="Theme.MaterialComponents">
