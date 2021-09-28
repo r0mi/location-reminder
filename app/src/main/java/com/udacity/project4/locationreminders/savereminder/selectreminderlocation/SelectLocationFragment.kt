@@ -120,6 +120,19 @@ class SelectLocationFragment : BaseFragment() {
             enableMyLocation()
             _viewModel.listOfLatLngs.value?.let {
                 drawPois(it)
+                _viewModel.listOfLatLngs.value?.let { pois ->
+                    val poi = when (pois.size) {
+                        1 -> Pair(pois[0], currentPOI?.radius ?: POI_RADIUS_IN_METERS)
+                        2 -> Pair(pois[0], pois[0].distanceTo(pois[1]))
+                        else -> getCircularBounds(pois)
+                    }
+
+                    map.animateCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                            poi.first.toBounds(poi.second), 100
+                        )
+                    )
+                }
             }
             if (currentPOI == null) {
                 _viewModel.showSnackBarInt.value = R.string.select_poi
@@ -331,22 +344,7 @@ class SelectLocationFragment : BaseFragment() {
                 showEnableMyLocationMenuItem = false
 
                 if (checkLocationPermission()) {
-                    if (!_viewModel.listOfLatLngs.value.isNullOrEmpty() && ::map.isInitialized) {
-                        _viewModel.listOfLatLngs.value?.let { pois ->
-                            val poi = when (pois.size) {
-                                1 -> Pair(pois[0], currentPOI?.radius ?: POI_RADIUS_IN_METERS)
-                                2 -> Pair(pois[0], pois[0].distanceTo(pois[1]))
-                                else -> getCircularBounds(pois)
-                            }
-
-                            map.animateCamera(
-                                CameraUpdateFactory.newLatLngBounds(
-                                    poi.first.toBounds(poi.second), 100
-                                )
-                            )
-
-                        }
-                    } else {
+                    if (_viewModel.listOfLatLngs.value.isNullOrEmpty()) {
                         getLastLocation()
                     }
                 } else {
