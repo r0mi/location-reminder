@@ -16,7 +16,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class RemindersActivity : AppCompatActivity() {
 
     // Lazy inject SaveReminderViewModel that is shared between fragments
-    private val saveReminderViewModel by viewModel<SaveReminderViewModel>()
     private val remindersListViewModel by viewModel<RemindersListViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
