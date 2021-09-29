@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.maps.model.LatLng
 import com.udacity.project4.authentication.AuthenticationViewModel
 import com.udacity.project4.base.DataBindingViewHolder
@@ -33,10 +34,7 @@ import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
-import org.junit.After
-import org.junit.Before
-import org.junit.FixMethodOrder
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -60,6 +58,12 @@ class RemindersActivityTest :
     private lateinit var saveReminderViewModel: SaveReminderViewModel
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @get:Rule
+    var fineLocationPermission: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+    @get:Rule
+    var backgroundLocationPermission: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_BACKGROUND_LOCATION)
 
     /**
      * As we use Koin as a Service Locator Library to develop our code, we'll also use Koin to test our code.
