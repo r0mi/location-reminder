@@ -2,6 +2,10 @@ package com.udacity.project4.utils
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.location.Location
 import android.os.Build
@@ -10,6 +14,8 @@ import android.text.Spanned
 import android.view.View
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -126,4 +132,13 @@ fun String.toHtmlSpan(): Spanned = if (Build.VERSION.SDK_INT >= Build.VERSION_CO
     Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
 } else {
     Html.fromHtml(this)
+}
+
+val Context.notificationManager: NotificationManager?
+    get() = getSystemService()
+
+inline fun <reified T : Activity> Context.createIntent(vararg args: Pair<String, Any>) : Intent {
+    val intent = Intent(this, T::class.java)
+    intent.putExtras(bundleOf(*args))
+    return intent
 }
