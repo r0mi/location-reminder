@@ -120,6 +120,8 @@ class SelectLocationFragment : BaseFragment() {
             enableMyLocation()
             _viewModel.listOfLatLngs.value?.let {
                 drawPois(it)
+            }
+            if (!_viewModel.listOfLatLngs.value.isNullOrEmpty()) {
                 _viewModel.listOfLatLngs.value?.let { pois ->
                     val poi = when (pois.size) {
                         1 -> Pair(pois[0], currentPOI?.radius ?: POI_RADIUS_IN_METERS)
