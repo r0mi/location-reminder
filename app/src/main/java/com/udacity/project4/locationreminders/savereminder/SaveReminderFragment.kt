@@ -31,6 +31,7 @@ import com.udacity.project4.locationreminders.RemindersActivity.Companion.ACTION
 import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
+import com.udacity.project4.utils.ifRunningQOrLater
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -242,7 +243,7 @@ class SaveReminderFragment : BaseFragment() {
         if (foregroundAndBackgroundLocationPermissionApproved())
             return
         var permissionsArray = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (runningQOrLater) {
+        ifRunningQOrLater {
             permissionsArray += Manifest.permission.ACCESS_BACKGROUND_LOCATION
         }
         requestMultiplePermissions.launch(permissionsArray)
